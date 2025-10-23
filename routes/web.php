@@ -17,6 +17,8 @@ use App\Http\Controllers\NotificationController;
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/auth/redirect/{provider}', [AuthController::class, 'redirectToProvider'])->name('oauth.redirect');
+Route::get('/auth/callback/{provider}', [AuthController::class, 'handleProviderCallback'])->name('auth.callback');
 
 /*
 |--------------------------------------------------------------------------

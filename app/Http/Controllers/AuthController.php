@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -80,5 +81,23 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')->with('success', 'You have logged out successfully.');
+    }
+
+    public function handleProviderCallback(Request $request)
+    {
+        // Example for GitHub OAuth
+        $socialUser = Socialite::driver('github')->user();
+
+        // Find or create local user
+        $user = User::firstOrCreate(
+            ['email' => $socialUser->getEmail()],
+            ['name' => $socialUser->getName() ?? $socialUser->getNickname()]
+        );
+
+        // Log in user
+        Auth::login($user);
+
+        // Redirect to home/dashboard
+        return redirect()->route('home');
     }
 }
